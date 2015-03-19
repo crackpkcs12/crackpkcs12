@@ -1,0 +1,11 @@
+crackpkcs12 is a multithreaded program to crack PKCS12 files using a dictionary attack and/or a brute force attack
+
+User can choose the number of threads. By default, every CPU of the machine is used.
+
+No dictionary file is provided.
+
+You have to install openssl development library (libssl-dev [Debian, Ubuntu, etc] or openssl-devel [Fedora, RedHat, etc]) to compile it.
+
+You have to install openssl library to use it.
+
+See "crackpkcs12 -h" for usage info
