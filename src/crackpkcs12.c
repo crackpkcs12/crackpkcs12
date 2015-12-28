@@ -76,7 +76,7 @@ typedef struct {
 
 void usage() {
 	printf(
-"\nUsage:\n\ncrackpkcs12 { -d <dictionary_file> |  -b [ -m <min_psw_length> ] [ -M <max_psw_length> ] [ -c <base_char_sets> | -i <specific_char_sets> ] } [ -t <num_of_threads> ] [ -v ] <file_to_crack>\n"
+"\nUsage:\n\ncrackpkcs12 { -d <dictionary_file> |  -b [ -m <min_psw_length> ] [ -M <max_psw_length> ] [ -c <base_char_sets> | -s <specific_char_sets> ] } [ -t <num_of_threads> ] [ -v ] <file_to_crack>\n"
 "\n"
 "  -b                       Uses brute force attack\n\n"
 "  -m <min_password_length> Specifies minimum length of password (implies -b)\n\n"
