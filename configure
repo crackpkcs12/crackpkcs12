@@ -1789,7 +1789,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 PACKAGE=crackpkcs12
-VERSION=0.2.9
+VERSION=0.2.10
 EMAIL=aedelatorre@gmail.com
 
 am__api_version='1.11'
