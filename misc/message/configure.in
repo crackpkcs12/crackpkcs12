@@ -1,0 +1,13 @@
+AC_INIT(src/crackpkcs12.c)
+
+PACKAGE=crackpkcs12
+VERSION=0.2.7
+EMAIL=aedelatorre@gmail.com
+
+AM_INIT_AUTOMAKE($PACKAGE, $VERSION, $EMAIL)
+
+AC_PROG_CC
+
+AC_OUTPUT(Makefile src/Makefile)
+
+PKG_CHECK_MODULES([DEPS], [libssl])

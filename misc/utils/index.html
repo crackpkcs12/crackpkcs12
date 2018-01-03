@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>crackpkcs12: A multithreaded program to crack PKCS#12 files (p12 and pfx extensions)</TITLE>
+<META NAME="description" CONTENT="crackpkcs12: The fastest way to crack PKCS#12 files (.p12 and .pfx extensions)">
+<META NAME="keywords" CONTENT="crackpkcs12, crack, cracking, PKCS#12, p12, pfx">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="crackpkcs12.css">
+
+</HEAD>
+
+<BODY >
+
+<P>
+<H1 ALIGN="CENTER">crackpkcs12: A multithreaded program to crack PKCS#12 files (p12 and pfx extensions)
+<DIV CLASS="author_info">
+by aestu
+</DIV></H1>
+
+<P>
+<BR>
+
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL CLASS="TofC">
+<LI><A NAME="tex2html7"
+  HREF="#SECTION00020000000000000000">What is it?</A>
+<LI><A NAME="tex2html8"
+  HREF="#SECTION00030000000000000000">How to get it?</A>
+<LI><A NAME="tex2html9"
+  HREF="#SECTION00040000000000000000">How to install it?</A>
+<LI><A NAME="tex2html10"
+  HREF="#SECTION00050000000000000000">How to compile it?</A>
+<LI><A NAME="tex2html11"
+  HREF="#SECTION00060000000000000000">How to use it?</A>
+<LI><A NAME="tex2html12"
+  HREF="#SECTION00070000000000000000">Examples</A>
+</UL>
+<!--End of Table of Contents-->
+<P>
+
+<H1><A NAME="SECTION00020000000000000000">
+What is it?</A>
+</H1>
+
+<P>
+crackpkcs12 is a tool to audit PKCS#12 files passwords (extension .p12 or .pfx). It's written in C and uses openssl library.
+
+<P>
+It works on GNU/Linux and other UNIX systems.
+
+<P>
+His author is aestu and his license is GPLv3+ slightly modified to use openssl library. 
+<H1><A NAME="SECTION00030000000000000000">
+How to get it?</A>
+</H1>
+
+<P>
+You can download it <a href="http://sourceforge.net/projects/crackpkcs12/files/">here</a>.
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+How to install it?</A>
+</H1>
+
+<P>
+You have to install libssl library. <TT>libssl</TT> is the package in Debian like distros and <TT>openssl</TT> in RedHat like distros.  
+
+<P>
+For Debian like distributions (Debian, Ubuntu, Mint, Backtrack, etc) you can download .deb packages. No compilation is needed.
+
+<P>
+For other GNU/Linux distros or UNIX systems you have to compile from sources. See next section.
+
+<P>
+
+<H1><A NAME="SECTION00050000000000000000">
+How to compile it?</A>
+</H1>
+
+<P>
+You have to install libssl development library. <TT>libssl-dev</TT> is the package in Debian like distros and <TT>openssl-devel</TT> in RedHat like distros. 
+
+<P>
+Afterwards, you can follow the standard process:
+
+<P>
+<TT>tar -xf crackpkcs12*</TT>
+
+<P>
+<TT>cd crackpkcs12*</TT>
+
+<P>
+<TT>./configure</TT>
+
+<P>
+<TT>make</TT>
+
+<P>
+<TT>sudo make install</TT>
+
+<P>
+
+<H1><A NAME="SECTION00060000000000000000">
+How to use it?</A>
+</H1>
+
+<P>
+crackpkcs12 is able to perform two types of attack: Dictionary (no dictionary is provided) or brute force.
+
+<P>
+Use help message to read the params description:
+
+<P>
+<TT>crackpkcs12 -h
+</TT>
+</P>
+
+<H1><A NAME="SECTION00070000000000000000">
+Examples</A>
+</H1>
+
+<P>
+A simple dictionary attack:
+
+<P>
+<TT>crackpkcs12 -d dictionary.txt certificate.pfx</TT>
+
+<P>
+A simple brute force attack:
+
+<P>
+<TT>crackpkcs12 -b certificate.pfx</TT>
+
+<P>
+A combinate attack. When dictionary attack finishes, a brute force attack starts:
+
+<P>
+<TT>crackpkcs12 -b -d dictionary.txt certificate.pfx</TT>
+
+<P>
+A combinate attack. When dictionary attack finishes, a brute force attack starts. Brute force attack uses just lower and upper case letters:
+
+<P>
+<TT>crackpkcs12 -d dictionary.txt -b -caA certificate.pfx</TT>
+
+<P>
+A combinate attack. When dictionary attack finishes, a brute force attack starts. Brute force attack uses just numbers and minimun length of passwords is 5:
+
+<P>
+<TT>crackpkcs12 -d dictionary.txt -b -cn -m5 certificate.pfx</TT>
+
+<BR><HR>
+</BODY>
+</HTML>

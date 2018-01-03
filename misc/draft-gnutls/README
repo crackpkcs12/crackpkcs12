@@ -1,0 +1,30 @@
+crackpkcs12 is a multithreaded program to crack PKCS12 files using a dictionary attack and/or a brute force attack
+
+User can choose the number of threads. By default, every CPU of the machine is used.
+
+No dictionary file is provided.
+
+To compile it you have to install openssl development library (libssl-dev [Debian and Ubuntu] or openssl-devel [Fedora]).
+
+To use it you have to install openssl library.
+
+Usage:
+
+crackpkcs12 { -d <dictionary_file> |  -b <max_psw_length> [ -c <base_char_sets> ] } [ -t <num_of_threads> ] [ -v ] [ -s <message_interval> ] <file_to_crack>
+
+-b <max_password_length> Use brute force attack and specify maximum length of password
+
+-c <base_char_sets>      Specify characters sets (one or more than one) and order to conform passwords
+                         a = letters (abcdefghijklmnopqrstuvwxyz)
+                         A = capital letters (ABCDEFGHIJKLMNOPQRSTUVWXYZ)
+                         n = digits (0123456789)
+                         s = special characters (!\"#$%%&'()*+,-./:;<=>?@[\\]^_`{|}~)
+                         x = all previous sets\n\n"
+
+-d <dictionary_file>     Use dictionary attack and specify dictionary file path
+
+-t <number_of_threads>   Specify number of threads (by default number of CPU's)
+
+-v                       Verbose mode
+
+-s <message_inteval>     Number of attemps between messages (implied -v) (default 100000)

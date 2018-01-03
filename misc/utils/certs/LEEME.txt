@@ -1,0 +1,1 @@
+La contraseña de todos estos archivos p12 y pfx es "usr0052"

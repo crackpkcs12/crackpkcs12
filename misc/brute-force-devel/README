@@ -1,0 +1,20 @@
+crackpkcs12 is a multithreaded program to crack
+PKCS12 files using a dictionary attack. User can
+choose the number of threads. By default, every
+CPU of the machine is used.
+
+No dictionary file is provided.
+
+To compile it you have to install openssl development
+library.
+
+To use it you have to install openssl library.
+
+Usage:
+
+crackpkcs12 -d <dictionary_file> [ -t <number_of_threads> ] [ -v [ -s <message_interval> ] ] <file_to_crack>
+
+  -d <dictionary_file>     Specify dictionary file path
+  -t <number_of_threads>   Specify number of threads (by default number of CPU's)
+  -v                       Verbose mode
+  -s <message_inteval>     Number of attemps between messages (implied -v)

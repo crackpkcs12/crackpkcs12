@@ -1,0 +1,12 @@
+[jsmith@linux ~]$ sftp jsmith@web.sourceforge.net
+Connecting to web.sourceforge.net...
+The authenticity of host 'web.sourceforge.net (216.34.181.70)' can't be established.
+RSA key fingerprint is b0:a8:eb:30:ce:1a:0e:6a:4d:7a:6b:3a:0a:c6:27:60.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'web.sourceforge.net,216.34.181.70' (RSA) to the list of known hosts.
+jsmith@web.sourceforge.net's password:
+sftp> cd /home/project-web/fooproject/htdocs
+sftp> put index.html
+Uploading index.html to /home/project-web/fooproject/htdocs/index.html
+index.html                                                                                       100%  241     0.2KB/s   00:01
+sftp> exit
