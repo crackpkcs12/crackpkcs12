@@ -291,6 +291,16 @@ int main(int argc, char** argv) {
 	if (isbrute) {
 		workerbrute *wthread = (workerbrute *) calloc(nthreads,sizeof(workerbrute));
 
+		if (prefix != NULL && strlen(prefix) >= wordlength_min) {
+			wordlength_min = strlen(prefix)+1;
+			printf("\nWarning: Min length should be greater than the prefix length. Using %d\n", wordlength_min);
+		}
+
+		if (prefix != NULL && strlen(prefix) >= wordlength_max) {
+			wordlength_max = strlen(prefix)+1;
+			printf("\nWarning: Max length should be greater than the prefix length. Using %d\n", wordlength_max);
+		}
+
 		printf("\nBrute force attack - Starting %d threads\n",nthreads);
 		printf("\nAlphabet: %s", base);
 		if (strchr(base,' ') != NULL) printf(" <(including blank)>");		
@@ -470,12 +480,12 @@ void *work_brute( void *ptr ) {
 	int maxwordlength = wthread->wordlength;
 	int i;
 	*(wthread->count) = 0;
-	int p = strlen(wthread->word);
+	int current_lenght = strlen(wthread->word);
 	for (wthread->wordlength=wthread->wordlength_min; wthread->wordlength <= maxwordlength; wthread->wordlength++) {
 		for (i=wthread->id; i<wthread->baselength; i+=nthreads) {
-			wthread->word[p] = wthread->base[i];
-			if (wthread->wordlength>1)
-				generate(wthread, p+1, p12, wthread->count);
+			wthread->word[current_lenght] = wthread->base[i];
+			if (wthread->wordlength>current_lenght+1)
+				generate(wthread, current_lenght+1, p12, wthread->count);
 			else
 				try(wthread, p12, wthread->count);
 		}
