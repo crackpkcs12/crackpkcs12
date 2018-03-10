@@ -79,6 +79,7 @@ void usage() {
 "\nUsage:\n\ncrackpkcs12 { -d <dictionary_file> |  -b [ -m <min_psw_length> ] [ -M <max_psw_length> ] [ -c <base_char_sets> | -s <specific_char_sets> ] } [ -t <num_of_threads> ] [ -v ] <file_to_crack>\n"
 "\n"
 "  -b                       Uses brute force attack\n\n"
+"  -p <prefix>              Prefix for brute force attack\n\n"
 "  -m <min_password_length> Specifies minimum length of password (implies -b)\n\n"
 "  -M <max_password_length> Specifies maximum length of password (implies -b)\n\n"
 "  -c <base_char_sets>      Specifies characters sets (one or more than one) and order to conform passwords (requires -b, -m or -M)\n"
@@ -104,7 +105,7 @@ void try(workerbrute *wthread, PKCS12 *p12, unsigned long long *gcount);
 
 int main(int argc, char** argv) {
 
-	char *psw, *infile, *dict, *nt, *msgintstring, quiet, isdict, isbrute, *swl_min, *swl_max, *scs, *ics, *base;
+	char *psw, *infile, *dict, *nt, *msgintstring, quiet, isdict, isbrute, *swl_min, *swl_max, *scs, *ics, *base, *prefix;
 	int c;
 	unsigned long long *count;
 	int wordlength_min = MINWORDLENGTH;
@@ -120,16 +121,21 @@ int main(int argc, char** argv) {
 	nt = NULL;
 	isdict = 0;
 	isbrute = 0;
+	prefix = NULL;
 	swl_min = NULL;
 	swl_max = NULL;
 	base = NULL;
 	nthreads = sysconf (_SC_NPROCESSORS_ONLN);
 	nthreads_total = sysconf (_SC_NPROCESSORS_ONLN);
 
-	while ((c = getopt (argc, argv, "t:d:s:vbm:M:c:")) != -1)
+	while ((c = getopt (argc, argv, "t:d:s:vbp:m:M:c:")) != -1)
 		switch (c) {
 			case 'b':
 				isbrute = 1;
+				break;
+			case 'p':
+				isbrute = 1;
+				prefix = optarg;
 				break;
 			case 'M':
 				isbrute = 1;
@@ -285,6 +291,16 @@ int main(int argc, char** argv) {
 	if (isbrute) {
 		workerbrute *wthread = (workerbrute *) calloc(nthreads,sizeof(workerbrute));
 
+		if (prefix != NULL && strlen(prefix) >= wordlength_min) {
+			wordlength_min = strlen(prefix)+1;
+			printf("\nWarning: Min length should be greater than the prefix length. Using %d\n", wordlength_min);
+		}
+
+		if (prefix != NULL && strlen(prefix) >= wordlength_max) {
+			wordlength_max = strlen(prefix)+1;
+			printf("\nWarning: Max length should be greater than the prefix length. Using %d\n", wordlength_max);
+		}
+
 		printf("\nBrute force attack - Starting %d threads\n",nthreads);
 		printf("\nAlphabet: %s", base);
 		if (strchr(base,' ') != NULL) printf(" <(including blank)>");		
@@ -298,7 +314,10 @@ int main(int argc, char** argv) {
 			wthread[i].id = i;
 			wthread[i].wordlength_min = wordlength_min;
 			wthread[i].wordlength = wordlength_max;
-			wthread[i].word = (char *) calloc(wordlength_max, sizeof(char));
+			wthread[i].word = (char *) calloc(wordlength_max+1, sizeof(char));
+			if (prefix != NULL) {
+				strncat(wthread[i].word,prefix,wordlength_max);
+			}
 			wthread[i].base = base;
 			wthread[i].baselength = strlen(base);
 			wthread[i].m = &mutex;
@@ -461,11 +480,12 @@ void *work_brute( void *ptr ) {
 	int maxwordlength = wthread->wordlength;
 	int i;
 	*(wthread->count) = 0;
+	int current_lenght = strlen(wthread->word);
 	for (wthread->wordlength=wthread->wordlength_min; wthread->wordlength <= maxwordlength; wthread->wordlength++) {
 		for (i=wthread->id; i<wthread->baselength; i+=nthreads) {
-			wthread->word[0] = wthread->base[i];
-			if (wthread->wordlength>1)
-				generate(wthread, 1, p12, wthread->count);
+			wthread->word[current_lenght] = wthread->base[i];
+			if (wthread->wordlength>current_lenght+1)
+				generate(wthread, current_lenght+1, p12, wthread->count);
 			else
 				try(wthread, p12, wthread->count);
 		}
