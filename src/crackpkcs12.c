@@ -79,7 +79,8 @@ void usage() {
 "\nUsage:\n\ncrackpkcs12 { -d <dictionary_file> |  -b [ -m <min_psw_length> ] [ -M <max_psw_length> ] [ -c <base_char_sets> | -s <specific_char_sets> ] } [ -t <num_of_threads> ] [ -v ] <file_to_crack>\n"
 "\n"
 "  -b                       Uses brute force attack\n\n"
-"  -p <prefix>              Prefix for brute force attack\n\n"
+"  -p <prefix>				Prefix for brute force attack\n\n"
+"  -S <suffix>				Suffix for brute force attack\n\n"
 "  -m <min_password_length> Specifies minimum length of password (implies -b)\n\n"
 "  -M <max_password_length> Specifies maximum length of password (implies -b)\n\n"
 "  -c <base_char_sets>      Specifies characters sets (one or more than one) and order to conform passwords (requires -b, -m or -M)\n"
@@ -105,7 +106,7 @@ void try(workerbrute *wthread, PKCS12 *p12, unsigned long long *gcount);
 
 int main(int argc, char** argv) {
 
-	char *psw, *infile, *dict, *nt, *msgintstring, quiet, isdict, isbrute, *swl_min, *swl_max, *scs, *ics, *base, *prefix;
+	char *psw, *infile, *dict, *nt, *msgintstring, quiet, isdict, isbrute, *swl_min, *swl_max, *scs, *ics, *base, *prefix, *suffix;
 	int c;
 	unsigned long long *count;
 	int wordlength_min = MINWORDLENGTH;
@@ -122,13 +123,14 @@ int main(int argc, char** argv) {
 	isdict = 0;
 	isbrute = 0;
 	prefix = NULL;
+	suffix = NULL;
 	swl_min = NULL;
 	swl_max = NULL;
 	base = NULL;
 	nthreads = sysconf (_SC_NPROCESSORS_ONLN);
 	nthreads_total = sysconf (_SC_NPROCESSORS_ONLN);
 
-	while ((c = getopt (argc, argv, "t:d:s:vbp:m:M:c:")) != -1)
+	while ((c = getopt (argc, argv, "t:d:s:S:vbp:m:M:c:")) != -1)
 		switch (c) {
 			case 'b':
 				isbrute = 1;
@@ -136,6 +138,10 @@ int main(int argc, char** argv) {
 			case 'p':
 				isbrute = 1;
 				prefix = optarg;
+				break;
+            case 'S':
+                isbrute = 1;
+                suffix = optarg;
 				break;
 			case 'M':
 				isbrute = 1;
@@ -291,19 +297,42 @@ int main(int argc, char** argv) {
 	if (isbrute) {
 		workerbrute *wthread = (workerbrute *) calloc(nthreads,sizeof(workerbrute));
 
-		if (prefix != NULL && strlen(prefix) >= wordlength_min) {
-			wordlength_min = strlen(prefix)+1;
-			printf("\nWarning: Min length should be greater than the prefix length. Using %d\n", wordlength_min);
-		}
+        if(prefix != NULL && suffix != NULL) {
+            if(strlen(prefix) + strlen(suffix) >= wordlength_min){
+                wordlength_min = strlen(prefix)+strlen(suffix)+1;
+                printf("\nWarning: Min length should be greater than the prefix + suffix length. Using %d\n", wordlength_min);
+            }
+            if(strlen(prefix) + strlen(suffix) >= wordlength_max){
+                wordlength_max = strlen(prefix)+strlen(suffix)+1;
+                printf("\nWarning: Max length should be greater than the prefix + suffix length. Using %d\n", wordlength_max);
+            }
+        } else {
+            if (prefix != NULL && strlen(prefix) >= wordlength_min) {
+                wordlength_min = strlen(prefix)+1;
+                printf("\nWarning: Min length should be greater than the prefix length. Using %d\n", wordlength_min);
+            }
 
-		if (prefix != NULL && strlen(prefix) >= wordlength_max) {
-			wordlength_max = strlen(prefix)+1;
-			printf("\nWarning: Max length should be greater than the prefix length. Using %d\n", wordlength_max);
-		}
+            if (prefix != NULL && strlen(prefix) >= wordlength_max) {
+                wordlength_max = strlen(prefix)+1;
+                printf("\nWarning: Max length should be greater than the prefix length. Using %d\n", wordlength_max);
+            }
+
+            if (suffix != NULL && strlen(suffix) >= wordlength_min) {
+                wordlength_min = strlen(suffix)+1;
+                printf("\nWarning: Min length should be greater than the suffix length. Using %d\n", wordlength_min);
+            }
+
+            if (suffix != NULL && strlen(suffix) >= wordlength_max) {
+                wordlength_max = strlen(suffix)+1;
+                printf("\nWarning: Max length should be greater than the suffix length. Using %d\n", wordlength_max);
+            }
+        }
 
 		printf("\nBrute force attack - Starting %d threads\n",nthreads);
 		printf("\nAlphabet: %s", base);
-		if (strchr(base,' ') != NULL) printf(" <(including blank)>");		
+		if (strchr(base,' ') != NULL) printf(" <(including blank)>");	
+		if (prefix != NULL) printf("\nPrefix: %s", prefix);
+		if (suffix != NULL) printf("\nSuffix: %s", suffix);	
 		printf("\nMin length: %d", wordlength_min);
 		if (swl_min == NULL) printf(" [default]");
 		printf("\nMax length: %d", wordlength_max);
@@ -317,6 +346,9 @@ int main(int argc, char** argv) {
 			wthread[i].word = (char *) calloc(wordlength_max+1, sizeof(char));
 			if (prefix != NULL) {
 				strncat(wthread[i].word,prefix,wordlength_max);
+			}
+            if (suffix != NULL) {
+				strncat(suffix,wthread[i].word,wordlength_max);
 			}
 			wthread[i].base = base;
 			wthread[i].baselength = strlen(base);
