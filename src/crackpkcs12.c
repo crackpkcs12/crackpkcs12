@@ -142,6 +142,7 @@ int main(int argc, char** argv) {
             case 'S':
                 isbrute = 1;
                 suffix = optarg;
+				break;
 			case 'M':
 				isbrute = 1;
 				swl_max = optarg;				
@@ -329,7 +330,9 @@ int main(int argc, char** argv) {
 
 		printf("\nBrute force attack - Starting %d threads\n",nthreads);
 		printf("\nAlphabet: %s", base);
-		if (strchr(base,' ') != NULL) printf(" <(including blank)>");		
+		if (strchr(base,' ') != NULL) printf(" <(including blank)>");	
+		if (prefix != NULL) printf("\nPrefix: %s", prefix);
+		if (suffix != NULL) printf("\nSuffix: %s", suffix);	
 		printf("\nMin length: %d", wordlength_min);
 		if (swl_min == NULL) printf(" [default]");
 		printf("\nMax length: %d", wordlength_max);
